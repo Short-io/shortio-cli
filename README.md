@@ -1,19 +1,33 @@
-Import CSV file to short.cm
+Short.cm CLI
 ===========================
+
+A command line UI to [Short.cm website](https://short.cm)
+
 
 Usage:
 
-    usage: csv_import.py [-h] --secret-key SECRET_KEY --filename FILENAME --domain
-                         DOMAIN --path-column PATH_COLUMN --original-url-column
-                         ORIGINAL_URL_COLUMN [--title-column TITLE_COLUMN]
-                         [--created-at-column CREATED_AT_COLUMN]
+    usage: cmd.py [-h] --secret-key SECRET_KEY {csv-import} ...
 
     CSV to Short.cm importer
+
+    positional arguments:
+      {csv-import}
+        csv-import          CSV to Short.cm importer
 
     optional arguments:
       -h, --help            show this help message and exit
       --secret-key SECRET_KEY
                             Your short.cm secret key
+
+CSV Import:
+
+    usage: cmd.py csv-import [-h] --filename FILENAME --domain DOMAIN
+                             --path-column PATH_COLUMN --original-url-column
+                             ORIGINAL_URL_COLUMN [--title-column TITLE_COLUMN]
+                             [--created-at-column CREATED_AT_COLUMN]
+
+    optional arguments:
+      -h, --help            show this help message and exit
       --filename FILENAME   Filename to import
       --domain DOMAIN       Short domain
       --path-column PATH_COLUMN
