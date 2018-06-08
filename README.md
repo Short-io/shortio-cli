@@ -1,7 +1,11 @@
 Short.cm CLI
 ===========================
 
-A command line UI to [Short.cm website](https://short.cm)
+A command line UI to [Short.cm website](https://short.cm).
+
+First version only allows to import any CSV files (including YOURLS and Bitly) to Short.cm website.
+
+You can get your secret key in [Connected apps & API](https://app.short.cm/users/connected_apps) page.
 
 
 Usage:
