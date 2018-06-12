@@ -32,9 +32,9 @@ Usage
 CSV Import:
 
     usage: shortcm csv-import [-h] --filename FILENAME --domain DOMAIN
-                             --path-column PATH_COLUMN --original-url-column
-                             ORIGINAL_URL_COLUMN [--title-column TITLE_COLUMN]
-                             [--created-at-column CREATED_AT_COLUMN]
+                              [--path-column PATH_COLUMN] --original-url-column
+                              ORIGINAL_URL_COLUMN [--title-column TITLE_COLUMN]
+                              [--created-at-column CREATED_AT_COLUMN]
 
     optional arguments:
       -h, --help            show this help message and exit
