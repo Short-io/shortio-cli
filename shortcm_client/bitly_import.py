@@ -13,20 +13,7 @@ def chunks(l, n):
         yield l[i:i + n]
 
 def import_bitly(bitly_key, secret_key, domain):
-    bitly_session = requests.Session()
-    bitly_session.headers={
-        "Authorization": 'Bearer ' + bitly_key,
-    }
-    groups_res = bitly_session.get(
-        'https://api-ssl.Bitly.com/v4/groups')
-    groups_res.raise_for_status()
-    groups = groups_res.json()
-    print(groups)
-    for group in groups['groups']:
-        logging.info("Importing {name}".format(**group))
-        bitlinks_res = bitly_session.get('https://api-ssl.Bitly.com/v4/groups/{guid}/bitlinks'.format(**group), params=dict(custom_bitlink="on"))
-        bitlinks_res.raise_for_status()
-        print(bitlinks_res.json())
+    pass  # TODO do bitly
 
 
 def add_parser(subparsers):

@@ -37,7 +37,7 @@ def add_parser(subparsers):
     import_parser = subparsers.add_parser('csv-import', help='CSV to Short.cm importer')
     import_parser.add_argument('--filename', dest='filename', help='Filename to import', required=True)
     import_parser.add_argument('--domain', dest='domain', help='Short domain', required=True)
-    import_parser.add_argument('--path-column', dest='path_column', help='Column number (starting from 0) for path', required=True, type=int)
+    import_parser.add_argument('--path-column', dest='path_column', help='Column number (starting from 0) for path', type=int)
     import_parser.add_argument('--original-url-column', dest='original_url_column', help='Column number (starting from 0) for original URL', required=True, type=int)
     import_parser.add_argument('--title-column', dest='title_column', help='Column number (starting from 0) for link title', type=int)
     import_parser.add_argument('--created-at-column', dest='created_at_column', help='Column number (starting from 0) for link creation date', type=int)
