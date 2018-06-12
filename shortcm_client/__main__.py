@@ -2,9 +2,9 @@ import requests
 import re
 import argparse
 import csv
-from . import csv_import, bitly_import
+from . import csv_import, bitly_import, link_expand
 
-shortcm_subparsers = [csv_import, bitly_import]
+shortcm_subparsers = [csv_import, bitly_import, link_expand]
 
 def chunks(l, n):
     """Yield successive n-sized chunks from l."""
@@ -35,7 +35,7 @@ def import_csv(filename, secret_key, domain, original_url_column, path_column, t
 
 
 def main():
-    parser = argparse.ArgumentParser(description='CSV to Short.cm importer')
+    parser = argparse.ArgumentParser(description='CSV to Short.cm importer', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--secret-key', dest='secret_key', help='Your short.cm secret key', required=True)
     subparsers = parser.add_subparsers(dest="subcommand")
     subparsers.required = True

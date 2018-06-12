@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 requests = "*"
+"progressbar2" = "*"
 
 [dev-packages]
 wheel = "*"
