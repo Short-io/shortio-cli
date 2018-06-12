@@ -7,10 +7,16 @@ First version only allows to import any CSV files (including YOURLS and Bitly) t
 
 You can get your secret key in [Connected apps & API](https://app.short.cm/users/connected_apps) page.
 
+Installation
+============
 
-Usage:
+    pip install shortcm-client
 
-    usage: cmd.py [-h] --secret-key SECRET_KEY {csv-import} ...
+
+Usage
+=====
+
+    usage: shortcm [-h] --secret-key SECRET_KEY {csv-import} ...
 
     CSV to Short.cm importer
 
@@ -25,7 +31,7 @@ Usage:
 
 CSV Import:
 
-    usage: cmd.py csv-import [-h] --filename FILENAME --domain DOMAIN
+    usage: shortcm csv-import [-h] --filename FILENAME --domain DOMAIN
                              --path-column PATH_COLUMN --original-url-column
                              ORIGINAL_URL_COLUMN [--title-column TITLE_COLUMN]
                              [--created-at-column CREATED_AT_COLUMN]

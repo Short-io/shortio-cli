@@ -3,6 +3,8 @@ import re
 import argparse
 import csv
 
+subcommand = 'csv-import'
+
 def chunks(l, n):
     """Yield successive n-sized chunks from l."""
     for i in range(0, len(l), n):
@@ -31,12 +33,7 @@ def import_csv(filename, secret_key, domain, original_url_column, path_column, t
             print(idx)
 
 
-def main():
-    parser = argparse.ArgumentParser(description='CSV to Short.cm importer')
-    parser.add_argument('--secret-key', dest='secret_key', help='Your short.cm secret key', required=True)
-    subparsers = parser.add_subparsers(dest="subcommand")
-    subparsers.required = True
-
+def add_parser(subparsers):
     import_parser = subparsers.add_parser('csv-import', help='CSV to Short.cm importer')
     import_parser.add_argument('--filename', dest='filename', help='Filename to import', required=True)
     import_parser.add_argument('--domain', dest='domain', help='Short domain', required=True)
@@ -44,12 +41,11 @@ def main():
     import_parser.add_argument('--original-url-column', dest='original_url_column', help='Column number (starting from 0) for original URL', required=True, type=int)
     import_parser.add_argument('--title-column', dest='title_column', help='Column number (starting from 0) for link title', type=int)
     import_parser.add_argument('--created-at-column', dest='created_at_column', help='Column number (starting from 0) for link creation date', type=int)
-    args = parser.parse_args()
+    return import_parser
 
-    if args.subcommand == 'csv-import':
-        import_csv(filename=args.filename, secret_key=args.secret_key, domain=args.domain,
-                   original_url_column=args.original_url_column, path_column=args.path_column, title_column=args.title_column,
-                   created_at_column=args.created_at_column)
 
-if __name__ == '__main__':
-    main()
+def run_command(args):
+    import_csv(filename=args.filename, secret_key=args.secret_key, domain=args.domain,
+               original_url_column=args.original_url_column, path_column=args.path_column, title_column=args.title_column,
+               created_at_column=args.created_at_column)
+
