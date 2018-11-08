@@ -3,7 +3,7 @@
 from setuptools import setup
 
 setup(name='shortcm-client',
-      version='0.5',
+      version='0.6',
       description='Short.cm commpand line UI',
       author='Andrii Kostenko',
       author_email='andrii@short.cm',

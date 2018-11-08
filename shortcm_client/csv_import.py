@@ -11,7 +11,16 @@ def chunks(l, n):
     for i in range(0, len(l), n):
         yield l[i:i + n]
 
-def import_csv(filename, secret_key, domain, original_url_column, path_column, title_column, created_at_column, cloaking, delimiter, **kwargs):
+FIELD_MAPPING={
+    'originalURL': 'original_url_column',
+    'createdAt': 'created_at_column',
+    'title': 'title_column',
+    'utmSource': 'utm_source_column',
+    'utmMedium': 'utm_medium_column',
+    'utmCampaign': 'utm_campaign_column',
+}
+
+def import_csv(filename, secret_key, domain, path_column, cloaking, delimiter, **kwargs):
     with open(filename) as f:
         csv_reader = csv.reader(f, delimiter=delimiter)
         lines = [line for line in csv_reader]
@@ -25,21 +34,26 @@ def import_csv(filename, secret_key, domain, original_url_column, path_column, t
             progressbar.AdaptiveETA()
         ], max_value=links_count)
         for idx, chunk in enumerate(link_chunks):
+            link_dicts = []
+            for chunk_item in chunk:
+                link_dict = dict(
+                    cloaking=int(cloaking),
+                    path=re.sub('https?://[^/]+/', '', chunk_item[path_column]) if path_column is not None else None,
+                )
+                for api_param, cli_param in FIELD_MAPPING.items():
+                    if kwargs.get(cli_param, None):
+                        link_dict[api_param] = chunk_item[kwargs[cli_param]]
+                link_dicts.append(link_dict)
             r = requests.post('https://api.short.cm/links/bulk', headers={
                 'Authorization': secret_key,
             }, json=dict(
                 domain=domain,
                 allowDuplicates=kwargs['allow_duplicates'],
-                links=[
-                    dict(
-                        originalURL=chunk_item[original_url_column],
-                        cloaking=int(cloaking),
-                        path=re.sub('https?://[^/]+/', '', chunk_item[path_column]) if path_column is not None else None,
-                        title=chunk_item[title_column] if title_column is not None else None,
-                        createdAt=chunk_item[created_at_column] if created_at_column is not None else None,
-                    ) for chunk_item in chunk
-                ]
+                links=link_dicts,
             ))
+            if r.status_code == 400:
+                print(r.json())
+                r.raise_for_status()
             r.raise_for_status()
             pb.update(idx * 1000)
 
@@ -55,6 +69,12 @@ def add_parser(subparsers):
     import_parser.add_argument('--original-url-column', dest='original_url_column', help='Column number (starting from 0) for original URL', required=True, type=int)
     import_parser.add_argument('--title-column', dest='title_column', help='Column number (starting from 0) for link title', type=int)
     import_parser.add_argument('--created-at-column', dest='created_at_column', help='Column number (starting from 0) for link creation date', type=int)
+    import_parser.add_argument(
+        '--utm-source-column', dest='utm_source_column', help='Column number (starting from 0) for link utm source', type=int)
+    import_parser.add_argument(
+        '--utm-medium-column', dest='utm_medium_column', help='Column number (starting from 0) for link utm medium', type=int)
+    import_parser.add_argument(
+        '--utm-campaign-column', dest='utm_campaign_column', help='Column number (starting from 0) for link utm medium', type=int)
     return import_parser
 
 
