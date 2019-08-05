@@ -3,6 +3,7 @@ import re
 import argparse
 import csv
 import progressbar
+import time
 
 subcommand = 'csv-import'
 
@@ -41,7 +42,7 @@ def import_csv(filename, secret_key, domain, path_column, cloaking, delimiter, *
                     path=re.sub('https?://[^/]+/', '', chunk_item[path_column]) if path_column is not None else None,
                 )
                 for api_param, cli_param in FIELD_MAPPING.items():
-                    if kwargs.get(cli_param, None):
+                    if kwargs.get(cli_param, None) is not None:
                         link_dict[api_param] = chunk_item[kwargs[cli_param]]
                 link_dicts.append(link_dict)
             r = requests.post('https://api.short.cm/links/bulk', headers={
@@ -55,7 +56,12 @@ def import_csv(filename, secret_key, domain, path_column, cloaking, delimiter, *
                 print(r.json())
                 r.raise_for_status()
             r.raise_for_status()
+            j = r.json()
+            for link_status in j:
+                if link_status.get('error'):
+                    print(link_status['error'])
             pb.update(idx * 1000)
+            time.sleep(1)
 
 
 def add_parser(subparsers):
