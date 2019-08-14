@@ -4,6 +4,7 @@ import argparse
 import csv
 import progressbar
 import time
+import arrow
 
 subcommand = 'csv-import'
 
@@ -44,6 +45,8 @@ def import_csv(filename, secret_key, domain, path_column, cloaking, delimiter, *
                 for api_param, cli_param in FIELD_MAPPING.items():
                     if kwargs.get(cli_param, None) is not None:
                         link_dict[api_param] = chunk_item[kwargs[cli_param]]
+                        if api_param == "createdAt":
+                            link_dict[api_param] = arrow.get(link_dict[api_param]).format()
                 link_dicts.append(link_dict)
             r = requests.post('https://api.short.cm/links/bulk', headers={
                 'Authorization': secret_key,
