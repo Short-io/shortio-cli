@@ -1,4 +1,4 @@
 upload:
-	rm -rf dist
-	pipenv run python setup.py sdist bdist_wheel
-	pipenv run twine upload dist/*
+	rm -rf dist || true
+	python3 setup.py sdist
+	twine upload dist/*

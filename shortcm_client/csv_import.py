@@ -1,3 +1,4 @@
+import itertools
 import requests
 import re
 import argparse
@@ -5,13 +6,15 @@ import csv
 import progressbar
 import time
 import arrow
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 subcommand = 'csv-import'
 
-def chunks(l, n):
+def chunks(l, n, link_count):
     """Yield successive n-sized chunks from l."""
-    for i in range(0, len(l), n):
-        yield l[i:i + n]
+    for i in range(0, link_count, n):
+        yield itertools.islice(l, n)
 
 FIELD_MAPPING={
     'originalURL': 'original_url_column',
@@ -22,12 +25,22 @@ FIELD_MAPPING={
     'utmCampaign': 'utm_campaign_column',
 }
 
-def import_csv(filename, secret_key, domain, path_column, cloaking, delimiter, **kwargs):
+def import_csv(filename, secret_key, domain, path_column, cloaking, delimiter, skip_lines, **kwargs):
+    s = requests.Session()
+    retry = Retry(
+        total=5,
+        status_forcelist=[502],
+        method_whitelist=frozenset(['HEAD', 'TRACE', 'GET', 'PUT', 'OPTIONS', 'DELETE', 'POST']),
+    )
+    s.mount('https://', HTTPAdapter(max_retries=retry))
+    with open(filename) as f:
+        links_count = sum(1 for line in f) - skip_lines
+    total_lines = skip_lines + links_count
+    print(f"Skipping {skip_lines}, importing {links_count}. Total: {total_lines}")
     with open(filename) as f:
         csv_reader = csv.reader(f, delimiter=delimiter)
-        lines = [line for line in csv_reader]
-        links_count = len(lines)
-        link_chunks = chunks(lines, 1000)
+        itertools.islice(csv_reader, skip_lines)
+        link_chunks = chunks(csv_reader, 1000, links_count)
         pb = progressbar.ProgressBar(widgets=[
             progressbar.Percentage(),
             ' ',
@@ -48,7 +61,7 @@ def import_csv(filename, secret_key, domain, path_column, cloaking, delimiter, *
                         if api_param == "createdAt":
                             link_dict[api_param] = arrow.get(link_dict[api_param]).format()
                 link_dicts.append(link_dict)
-            r = requests.post('https://api.short.cm/links/bulk', headers={
+            r = s.post('https://api.short.cm/links/bulk', headers={
                 'Authorization': secret_key,
             }, json=dict(
                 domain=domain,
@@ -77,6 +90,7 @@ def add_parser(subparsers):
     import_parser.add_argument('--path-column', dest='path_column', help='Column number (starting from 0) for path', type=int)
     import_parser.add_argument('--original-url-column', dest='original_url_column', help='Column number (starting from 0) for original URL', required=True, type=int)
     import_parser.add_argument('--title-column', dest='title_column', help='Column number (starting from 0) for link title', type=int)
+    import_parser.add_argument('--skip-lines', dest='skip_lines', help='Skip first N lines from CSV before processing', type=int, default=0)
     import_parser.add_argument('--created-at-column', dest='created_at_column', help='Column number (starting from 0) for link creation date', type=int)
     import_parser.add_argument(
         '--utm-source-column', dest='utm_source_column', help='Column number (starting from 0) for link utm source', type=int)
