@@ -1,4 +1,4 @@
-Short.cm CLI
+Short.io CLI
 ===========================
 
 A command line UI to [Short.io website](https://short.io).
