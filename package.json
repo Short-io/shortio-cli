@@ -1,0 +1,38 @@
+{
+  "name": "@short.io/cli",
+  "version": "1.0.0",
+  "description": "Official CLI for Short.io URL shortening and link management",
+  "type": "module",
+  "bin": {
+    "shortio": "dist/bin.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Short-io/shortcm-cli.git"
+  },
+  "keywords": [
+    "short.io",
+    "cli",
+    "url-shortener",
+    "link-management"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Short-io/shortcm-cli/issues"
+  },
+  "homepage": "https://github.com/Short-io/shortcm-cli#readme",
+  "dependencies": {
+    "@short.io/client-node": "^3.3.0",
+    "commander": "^13.1.0",
+    "csv-parse": "^5.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.5",
+    "typescript": "^5.7.3"
+  }
+}
