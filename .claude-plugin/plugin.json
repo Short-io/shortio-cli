@@ -1,0 +1,19 @@
+{
+  "name": "shortio",
+  "version": "1.0.0",
+  "description": "Claude Code plugin for managing Short.io links, domains, QR codes, and geo targeting via the shortio CLI",
+  "author": {
+    "name": "Short.io",
+    "url": "https://short.io"
+  },
+  "license": "ISC",
+  "repository": "https://github.com/Short-io/shortio-cli",
+  "keywords": [
+    "claude-skill",
+    "claude-code",
+    "short-io",
+    "url-shortener",
+    "links",
+    "qr-codes"
+  ]
+}

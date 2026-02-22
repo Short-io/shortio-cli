@@ -131,6 +131,64 @@ shortio config show
 | `-V, --version` | Show version |
 | `-h, --help` | Show help |
 
+## Claude Code Plugin
+
+This project includes a [Claude Code](https://docs.anthropic.com/en/docs/claude-code) plugin that lets you manage Short.io links using natural language directly from your terminal.
+
+### Install from marketplace
+
+```bash
+# Add the marketplace (one-time)
+claude /plugin marketplace add Short-io/shortio-cli
+
+# Install the plugin
+claude /plugin install shortio
+```
+
+### Install locally
+
+```bash
+# Clone and set up the CLI
+git clone https://github.com/Short-io/shortio-cli.git
+cd shortio-cli
+npm install && npm run build && npm link
+
+# Test the plugin locally
+claude --plugin-dir .
+```
+
+### Setup
+
+Configure your API key (get it from [Short.io dashboard](https://app.short.io/settings/integrations/api-key)):
+
+```bash
+shortio config set-api-key YOUR_API_KEY
+```
+
+### Usage
+
+The `/shortio` slash command accepts natural language:
+
+```
+/shortio list all my domains
+/shortio create a link for example.com pointing to https://google.com
+/shortio show links for domain 12345
+/shortio generate a QR code for link lnk_abc123 and save to qr.png
+/shortio set a US redirect for link lnk_abc123 to https://us.example.com
+/shortio delete links lnk_abc,lnk_def
+```
+
+### Plugin structure
+
+```
+.claude-plugin/
+  plugin.json            # Plugin manifest
+  marketplace.json       # Marketplace metadata
+skills/
+  shortio/
+    SKILL.md             # Skill definition
+```
+
 ## Development
 
 ```bash
