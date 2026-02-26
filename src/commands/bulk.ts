@@ -30,10 +30,48 @@ export function registerBulkCommands(program: Command): void {
         skipLines: Number(opts.skipLines),
       });
 
+      const urlColumnIndex = Number(opts.urlColumn);
+      if (!Number.isInteger(urlColumnIndex) || urlColumnIndex < 0) {
+        throw new Error(`Invalid --url-column value: ${opts.urlColumn}`);
+      }
+
+      const pathColumnIndex =
+        opts.pathColumn != null ? Number(opts.pathColumn) : undefined;
+      if (
+        pathColumnIndex != null &&
+        (!Number.isInteger(pathColumnIndex) || pathColumnIndex < 0)
+      ) {
+        throw new Error(`Invalid --path-column value: ${opts.pathColumn}`);
+      }
+
+      const titleColumnIndex =
+        opts.titleColumn != null ? Number(opts.titleColumn) : undefined;
+      if (
+        titleColumnIndex != null &&
+        (!Number.isInteger(titleColumnIndex) || titleColumnIndex < 0)
+      ) {
+        throw new Error(`Invalid --title-column value: ${opts.titleColumn}`);
+      }
+
+      const maxRequiredIndex = Math.max(
+        urlColumnIndex,
+        pathColumnIndex != null ? pathColumnIndex : -1,
+        titleColumnIndex != null ? titleColumnIndex : -1,
+      );
+
+      rows.forEach((row, rowIndex) => {
+        if (row.length <= maxRequiredIndex) {
+          throw new Error(
+            `Row ${rowIndex} in CSV does not contain column index ${maxRequiredIndex} ` +
+              `(found ${row.length} columns).`,
+          );
+        }
+      });
+
       const links = rows.map((row) => ({
-        originalURL: row[Number(opts.urlColumn)],
-        path: opts.pathColumn != null ? row[Number(opts.pathColumn)] : undefined,
-        title: opts.titleColumn != null ? row[Number(opts.titleColumn)] : undefined,
+        originalURL: row[urlColumnIndex],
+        path: pathColumnIndex != null ? row[pathColumnIndex] : undefined,
+        title: titleColumnIndex != null ? row[titleColumnIndex] : undefined,
         cloaking: opts.cloaking || undefined,
       }));
 
@@ -57,7 +95,7 @@ export function registerBulkCommands(program: Command): void {
         }
         if (i + CHUNK_SIZE < links.length) {
           console.error(
-            `Processed ${Math.min(i + CHUNK_SIZE, links.length)}/${links.length} links...`
+            `Processed ${Math.min(i + CHUNK_SIZE, links.length)}/${links.length} links...`,
           );
         }
       }
