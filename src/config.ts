@@ -12,7 +12,12 @@ interface Config {
 export function readConfig(): Config {
   try {
     return JSON.parse(readFileSync(CONFIG_FILE, "utf-8"));
-  } catch {
+  } catch (error) {
+    console.warn(
+      `Warning: Failed to read config from ${CONFIG_FILE}: ${
+        error instanceof Error ? error.message : String(error)
+      }`,
+    );
     return {};
   }
 }
