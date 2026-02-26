@@ -84,7 +84,7 @@ export function registerBulkCommands(program: Command): void {
           body: {
             domain: opts.domain,
             allowDuplicates: opts.allowDuplicates,
-            links: chunk.map((l) => ({ ...l, originalURL: l.originalURL })),
+            links: chunk,
           },
         });
         if (result.error) handleError(result);
