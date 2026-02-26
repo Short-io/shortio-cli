@@ -7,7 +7,15 @@ export interface CsvOptions {
 }
 
 export function parseCsv(filePath: string, opts: CsvOptions = {}): string[][] {
-  const content = readFileSync(filePath, "utf-8");
+  let content: string;
+  try {
+    content = readFileSync(filePath, "utf-8");
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(
+      `Failed to read CSV file at path "${filePath}": ${message}`,
+    );
+  }
   const records: string[][] = parse(content, {
     delimiter: opts.delimiter || ",",
     from_line: (opts.skipLines || 0) + 1,
